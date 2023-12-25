@@ -22,7 +22,11 @@ public class Car : BaseEntity
 
     [ForeignKey(nameof(Garage.Id))]
     public Garage Garage { get; set; }
+
+    public int  GarageId { get; set; }
     
-    [ForeignKey(nameof(User.Cars))]
+    [ForeignKey(nameof(User.Id))]
     public User User { get; set; }
+
+    public int UserId { get; set; }
 }

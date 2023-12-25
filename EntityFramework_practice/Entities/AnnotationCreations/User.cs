@@ -13,9 +13,10 @@ public class User : BaseEntity
     [MaxLength(20)]
     public string Surname { get; set; }
     
-    [InverseProperty(nameof(Garage.User))]
-    public virtual ICollection<Garage> Garages { get; set; }
+    [ForeignKey(nameof(Garage.Id))]
+    public Garage UGarage { get; set; }
 
-    [InverseProperty(nameof(Car.User))]
+    public int GarageId { get; set; }
+    
     public virtual ICollection<Car> Cars { get; set; }
 }

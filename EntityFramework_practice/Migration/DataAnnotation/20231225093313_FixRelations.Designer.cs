@@ -3,6 +3,7 @@ using System;
 using EntityFramework_practice.DataContext.ForDataAnotation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EntityFramework_practice.Migration.DataAnnotation
 {
     [DbContext(typeof(DbContextApp))]
-    partial class DbContextAppModelSnapshot : ModelSnapshot
+    [Migration("20231225093313_FixRelations")]
+    partial class FixRelations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,21 +40,20 @@ namespace EntityFramework_practice.Migration.DataAnnotation
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)");
 
+                    b.Property<int>("Cars")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("GarageId")
-                        .HasColumnType("integer");
 
                     b.Property<string>("Model")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("Cars");
 
                     b.ToTable("Cars");
                 });
@@ -59,10 +61,7 @@ namespace EntityFramework_practice.Migration.DataAnnotation
             modelBuilder.Entity("EntityFramework_practice.Entities.AnnotationCreations.Garage", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CityName")
                         .IsRequired()
@@ -71,6 +70,9 @@ namespace EntityFramework_practice.Migration.DataAnnotation
 
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Garages")
+                        .HasColumnType("integer");
 
                     b.Property<string>("HouseNumber")
                         .IsRequired()
@@ -84,19 +86,21 @@ namespace EntityFramework_practice.Migration.DataAnnotation
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Garages");
+
                     b.ToTable("Garages");
                 });
 
             modelBuilder.Entity("EntityFramework_practice.Entities.AnnotationCreations.User", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("GarageId")
-                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -116,12 +120,24 @@ namespace EntityFramework_practice.Migration.DataAnnotation
             modelBuilder.Entity("EntityFramework_practice.Entities.AnnotationCreations.Car", b =>
                 {
                     b.HasOne("EntityFramework_practice.Entities.AnnotationCreations.Garage", "Garage")
+                        .WithMany()
+                        .HasForeignKey("Cars")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EntityFramework_practice.Entities.AnnotationCreations.User", "User")
+                        .WithMany()
+                        .HasForeignKey("Cars")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EntityFramework_practice.Entities.AnnotationCreations.Garage", null)
                         .WithMany("Cars")
                         .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EntityFramework_practice.Entities.AnnotationCreations.User", "User")
+                    b.HasOne("EntityFramework_practice.Entities.AnnotationCreations.User", null)
                         .WithMany("Cars")
                         .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -132,27 +148,33 @@ namespace EntityFramework_practice.Migration.DataAnnotation
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("EntityFramework_practice.Entities.AnnotationCreations.User", b =>
+            modelBuilder.Entity("EntityFramework_practice.Entities.AnnotationCreations.Garage", b =>
                 {
-                    b.HasOne("EntityFramework_practice.Entities.AnnotationCreations.Garage", "UGarage")
-                        .WithMany("Users")
+                    b.HasOne("EntityFramework_practice.Entities.AnnotationCreations.User", "User")
+                        .WithMany()
+                        .HasForeignKey("Garages")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EntityFramework_practice.Entities.AnnotationCreations.User", null)
+                        .WithMany("Garages")
                         .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("UGarage");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("EntityFramework_practice.Entities.AnnotationCreations.Garage", b =>
                 {
                     b.Navigation("Cars");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("EntityFramework_practice.Entities.AnnotationCreations.User", b =>
                 {
                     b.Navigation("Cars");
+
+                    b.Navigation("Garages");
                 });
 #pragma warning restore 612, 618
         }
