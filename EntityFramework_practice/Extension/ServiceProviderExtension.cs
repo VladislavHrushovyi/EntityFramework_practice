@@ -9,7 +9,7 @@ public static class ServiceProviderExtension
     {
         serviceCollection.AddAnnotationDataContext(config);
         serviceCollection.AddScoped<DbContextApp>();
-        serviceCollection.AddScoped<SeedData>();
+        serviceCollection.AddTransient<SeedData>();
         
         return serviceCollection;
     }
