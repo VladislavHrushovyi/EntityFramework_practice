@@ -1,4 +1,5 @@
 using EntityFramework_practice.Extension;
+using EntityFramework_practice.Extension.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,5 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/hello", () => "Hello");
-
+app.MapGroup("/DataAnnotation").DataAnnotationEndpoints().WithTags("DataAnnotationEndpoints");
 app.Run();

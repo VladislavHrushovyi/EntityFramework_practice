@@ -7,5 +7,5 @@ public class BaseEntity
     [Key]
     public int Id { get; set; }
     [Required]
-    public DateTime CreatedTime { get; set; }
+    public string CreatedTime { get; set; }
 }
