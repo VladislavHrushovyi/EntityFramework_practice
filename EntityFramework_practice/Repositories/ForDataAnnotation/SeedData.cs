@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections;
+using System.Globalization;
 using EntityFramework_practice.DataContext.ForDataAnotation;
 using EntityFramework_practice.Entities.AnnotationCreations;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,8 @@ public class SeedData(DbContextApp context)
         await RemoveAllRecordsOfAllTables();
         await InitGarages();
         await InitUsers();
-        await InitCars();
+        InitCars();
+        await context.Users.AddRangeAsync();
         await context.SaveChangesAsync();
 
         return context.Users.ToList();
@@ -27,62 +29,45 @@ public class SeedData(DbContextApp context)
         await _context.SaveChangesAsync();
     }
 
-    private async Task InitCars()
+    private void InitCars()
     {
-        var users = context.Users.AsNoTracking().ToList();
-        int idx = 0;
-        var cars = new List<Car>();
-        foreach (var user in users)
-        {
-            var userCars = Enumerable.Range(0, 3).Select(i => new Car()
-            {
-                CreatedTime = DateTime.Now.ToString(CultureInfo.InvariantCulture),
-                GarageId = user.GarageId,
-                Brand = "Brand" + idx,
-                Model = "Model" + idx,
-                CarNumber = "CarNumber" + idx,
-                UserId = user.Id
-            });
-            cars.AddRange(userCars);
-        }
         
-        await _context.Cars.AddRangeAsync(cars);
-        //await _context.SaveChangesAsync();
     }
 
     private async Task InitUsers()
     {
-        var garages = context.Garages.AsNoTracking().ToList();
-        int idx = 0;
-        var users = new List<User>();
+        var garages = await context.Garages.Include(garage => garage.Users).ToListAsync();
         foreach (var garage in garages)
         {
-            var garageUser = Enumerable.Range(0, 5).Select(i => new User()
+            var garageUsers = Enumerable.Range(0, 5).Select(i =>
             {
-                Name = "Name" + idx,
-                Surname = "Surname" + idx++,
-                GarageId = garage.Id,
-                CreatedTime = DateTime.Now.ToString(CultureInfo.InvariantCulture),
-                UGarage = garage,
-                Cars = new List<Car>(),
-            }).ToArray();
-            users.AddRange(garageUser);
+                var user = new User()
+                {
+                    Name = "Name" + i,
+                    Surname = "Surname" + i,
+                    CreatedTime = DateTime.Now.ToString(CultureInfo.InvariantCulture),
+                    Garage = garage,
+                    GarageId = garage.Id
+                };
+                garage.Users.Add(user);
+                return user;
+            }).ToList();
+            await context.Users.AddRangeAsync(garageUsers);
         }
-        await _context.Users.AddRangeAsync(users);
-        //await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
     }
 
     private async Task InitGarages()
     {
         var garages = Enumerable.Range(0, 3).Select(i => new Garage()
         {
+            Id = i + 1,
             CreatedTime = DateTime.Now.ToString(CultureInfo.InvariantCulture),
             HouseNumber = $"{i}",
             CityName = "City" + i,
-            StreetName = "Street" + i
-        }).ToArray();
-
-        await _context.Garages.AddRangeAsync(garages);
-        //await _context.SaveChangesAsync();
+            StreetName = "Street" + i,
+        });
+        await context.Garages.AddRangeAsync(garages);
+        await context.SaveChangesAsync();
     }
 }

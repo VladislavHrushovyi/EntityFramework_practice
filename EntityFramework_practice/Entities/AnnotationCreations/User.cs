@@ -14,7 +14,7 @@ public class User : BaseEntity
     public string Surname { get; set; }
     
     [ForeignKey(nameof(Garage.Id))]
-    public Garage UGarage { get; set; }
+    public Garage Garage { get; set; }
 
     public int GarageId { get; set; }
     
