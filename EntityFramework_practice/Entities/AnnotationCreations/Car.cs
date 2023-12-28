@@ -19,14 +19,15 @@ public class Car : BaseEntity
     [MaxLength(10)]
     [MinLength(3)]
     public string CarNumber { get; set; }
-
-    [ForeignKey(nameof(Garage.Id))]
+    
     public Garage Garage { get; set; }
 
+    [ForeignKey(nameof(Garage))]
     public int  GarageId { get; set; }
     
-    [ForeignKey(nameof(User.Id))]
+    
     public User User { get; set; }
 
+    [ForeignKey(nameof(User))]
     public int UserId { get; set; }
 }

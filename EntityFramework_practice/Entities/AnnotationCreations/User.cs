@@ -13,9 +13,10 @@ public class User : BaseEntity
     [MaxLength(20)]
     public string Surname { get; set; }
     
-    [ForeignKey(nameof(Garage.Id))]
+    [ForeignKey(nameof(GarageId))]
     public Garage Garage { get; set; }
 
+    [ForeignKey(nameof(Garage))]
     public int GarageId { get; set; }
     
     public virtual ICollection<Car> Cars { get; set; }
