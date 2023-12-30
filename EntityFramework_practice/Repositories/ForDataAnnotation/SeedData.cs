@@ -15,13 +15,17 @@ public class SeedData
         _context = context;
     }
 
-    public async Task<IEnumerable<User>> FillDataBase()
+    public IEnumerable<User> FillDataBase()
     {
-        await RemoveAllRecordsOfAllTables();
-        await InitGarages();
-        await InitUsers();
+        var task = RemoveAllRecordsOfAllTables();
+        while (!task.IsCompleted)
+        {
+            
+        }
+        InitGarages();
+        InitUsers();
         InitCars();
-        await _context.SaveChangesAsync();
+        //await _context.SaveChangesAsync();
         var users = _context.Users.ToList();
         var responseUser = users.Select(x => new User() { Id = x.Id, Name = x.Name});
         return responseUser;
@@ -32,7 +36,7 @@ public class SeedData
         _context.Users.RemoveRange(_context.Users);
         _context.Garages.RemoveRange(_context.Garages);
         _context.Cars.RemoveRange(_context.Cars);
-        //await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
     }
 
     private void InitCars()
@@ -40,35 +44,29 @@ public class SeedData
         
     }
 
-    private async Task InitUsers()
+    private void InitUsers()
     {
-        var garages = await _context.Garages.AsNoTracking().ToListAsync();
+        int userIdx = 0;
+        var garages = _context.Garages.Include(garage => garage.Users).ToList();
         foreach (var garage in garages)
         {
-            var garageUsers = Enumerable.Range(0, 1).Select(i =>
+            var garageUsers = Enumerable.Range(0, 5).Select(i => new User()
             {
-                var user = new User()
-                {
-                    Id = i + 100,
-                    Name = "Name" + i,
-                    Surname = "Surname" + i,
-                    CreatedTime = DateTime.Now.ToString(CultureInfo.InvariantCulture),
-                    Garage = garage,
-                    GarageId = garage.Id
-                };
-                _context.Users.Add(user);
-                return user;
-            }).ToList();
-            garage.Users = new List<User>(garageUsers);
-            await _context.SaveChangesAsync();
-            //users.AddRange(garageUsers);
+                Id = userIdx++ + 100,
+                Name = "Name" + i,
+                Surname = "Surname" + i,
+                CreatedTime = DateTime.Now.ToString(CultureInfo.InvariantCulture),
+                GarageId = garage.Id,
+                Cars = new List<Car>(),
+            });
+            
+            _context.Users.AddRange(garageUsers);
         }
 
-        //await _context.Users.AddRangeAsync(users);
-        //await _context.SaveChangesAsync();
+        _context.SaveChanges();
     }
 
-    private async Task InitGarages()
+    private void InitGarages()
     {
         var garages = Enumerable.Range(0, 3).Select(i => new Garage()
         {
@@ -77,8 +75,10 @@ public class SeedData
             HouseNumber = $"{i}",
             CityName = "City" + i,
             StreetName = "Street" + i,
+            Users = new List<User>(),
+            Cars = new List<Car>()
         });
-        await _context.Garages.AddRangeAsync(garages);
-        await _context.SaveChangesAsync();
+        _context.Garages.AddRange(garages);
+        _context.SaveChanges();
     }
 }

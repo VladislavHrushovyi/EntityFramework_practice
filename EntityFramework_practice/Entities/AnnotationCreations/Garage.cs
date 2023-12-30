@@ -20,7 +20,9 @@ public class Garage : BaseEntity
     [MinLength(5)]
     public string HouseNumber { get; set; }
 
-    public virtual ICollection<Car> Cars { get; set; }
+    [ForeignKey(nameof(Car.GarageId))]
+    public ICollection<Car>? Cars { get; set; }
 
-    public virtual ICollection<User> Users { get; set; }
+    [ForeignKey(nameof(User.GarageId))]
+    public ICollection<User>? Users { get; set; }
 }
