@@ -20,9 +20,9 @@ public class Garage : BaseEntity
     [MinLength(5)]
     public string HouseNumber { get; set; }
 
-    [ForeignKey(nameof(Car.GarageId))]
+    [InverseProperty(nameof(Car.Garage))]
     public ICollection<Car>? Cars { get; set; }
 
-    [ForeignKey(nameof(User.GarageId))]
+    [InverseProperty(nameof(User.Garage))]
     public ICollection<User>? Users { get; set; }
 }

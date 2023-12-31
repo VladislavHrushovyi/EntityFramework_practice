@@ -15,8 +15,8 @@ public class User : BaseEntity
 
     public int GarageId { get; set; }
 
-    public virtual Garage Garage { get; set; }
-
-    [ForeignKey(nameof(Car.UserId))]
+    public Garage Garage { get; set; }
+    
+    [InverseProperty(nameof(Car.User))]
     public virtual ICollection<Car> Cars { get; set; }
 }

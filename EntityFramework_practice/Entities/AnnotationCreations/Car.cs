@@ -22,9 +22,9 @@ public class Car : BaseEntity
     
     public int  GarageId { get; set; }
 
-    public virtual Garage Garage { get; set; }
+    public Garage Garage { get; set; }
 
     public int UserId { get; set; }
 
-    public virtual User User { get; set; }
+    public User User { get; set; }
 }

@@ -27,7 +27,7 @@ public class SeedData
         InitCars();
         //await _context.SaveChangesAsync();
         var users = _context.Users.ToList();
-        var responseUser = users.Select(x => new User() { Id = x.Id, Name = x.Name});
+        var responseUser = users.Select(x => new User(){Id = x.Id, GarageId = x.GarageId, Name = x.Name, Surname = x.Surname,CreatedTime = x.CreatedTime});
         return responseUser;
     }
 
@@ -57,6 +57,7 @@ public class SeedData
                 Surname = "Surname" + i,
                 CreatedTime = DateTime.Now.ToString(CultureInfo.InvariantCulture),
                 GarageId = garage.Id,
+                Garage = garage,
                 Cars = new List<Car>(),
             });
             
