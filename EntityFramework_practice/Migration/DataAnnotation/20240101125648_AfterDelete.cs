@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -7,26 +6,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EntityFramework_practice.Migration.DataAnnotation
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Microsoft.EntityFrameworkCore.Migrations.Migration
+    public partial class AfterDelete : Microsoft.EntityFrameworkCore.Migrations.Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Surname = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                    CreatedTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Garages",
                 columns: table => new
@@ -36,16 +20,31 @@ namespace EntityFramework_practice.Migration.DataAnnotation
                     CityName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     StreetName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     HouseNumber = table.Column<string>(type: "character varying(1)", maxLength: 1, nullable: false),
-                    UserId = table.Column<int>(type: "integer", nullable: false),
-                    CreatedTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedTime = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Garages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Surname = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    GarageId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedTime = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Garages_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
+                        name: "FK_Users_Garages_GarageId",
+                        column: x => x.GarageId,
+                        principalTable: "Garages",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -59,40 +58,41 @@ namespace EntityFramework_practice.Migration.DataAnnotation
                     Brand = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Model = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     CarNumber = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
-                    Cars = table.Column<int>(type: "integer", nullable: false),
-                    Car = table.Column<int>(type: "integer", nullable: true),
-                    CreatedTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    GarageId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedTime = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cars", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Cars_Garages_Car",
-                        column: x => x.Car,
+                        name: "FK_Cars_Garages_GarageId",
+                        column: x => x.GarageId,
                         principalTable: "Garages",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Cars_Users_Cars",
-                        column: x => x.Cars,
+                        name: "FK_Cars_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cars_Car",
+                name: "IX_Cars_GarageId",
                 table: "Cars",
-                column: "Car");
+                column: "GarageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cars_Cars",
+                name: "IX_Cars_UserId",
                 table: "Cars",
-                column: "Cars");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Garages_UserId",
-                table: "Garages",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_GarageId",
+                table: "Users",
+                column: "GarageId");
         }
 
         /// <inheritdoc />
@@ -102,10 +102,10 @@ namespace EntityFramework_practice.Migration.DataAnnotation
                 name: "Cars");
 
             migrationBuilder.DropTable(
-                name: "Garages");
+                name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Garages");
         }
     }
 }

@@ -25,9 +25,34 @@ public class SeedData
         InitGarages();
         InitUsers();
         InitCars();
-        //await _context.SaveChangesAsync();
-        var users = _context.Users.ToList();
-        var responseUser = users.Select(x => new User(){Id = x.Id, GarageId = x.GarageId, Name = x.Name, Surname = x.Surname,CreatedTime = x.CreatedTime});
+        var users = _context.Users.Include(x => x.Garage)
+            .Include(user => user.Cars)
+            .ToList();
+        var responseUser = users
+            .Select(x => new User()
+            {
+                Id = x.Id, 
+                GarageId = x.GarageId, 
+                Name = x.Name,
+                Surname = x.Surname,
+                CreatedTime = x.CreatedTime,
+                Garage = new Garage()
+                {
+                    Id = x.Garage.Id,
+                    CreatedTime = x.Garage.CreatedTime,
+                    HouseNumber = x.Garage.HouseNumber,
+                    CityName = x.Garage.CityName,
+                    StreetName = x.Garage.StreetName
+                },
+                Cars = x.Cars.Select(c => new Car()
+                {
+                    Id = c.Id,
+                    CreatedTime = c.CreatedTime,
+                    Brand = c.Brand,
+                    Model = c.Model,
+                    CarNumber = c.CarNumber
+                }).ToList()
+            });
         return responseUser;
     }
 
@@ -41,7 +66,27 @@ public class SeedData
 
     private void InitCars()
     {
-        
+        var users = _context.Users;
+        int carIdx = 0;
+        foreach (var user in users)
+        {
+            var userCars = Enumerable.Range(0, 3).Select(i => new Car()
+            {
+                Id = carIdx + 100,
+                CreatedTime = DateTime.Now.ToString(CultureInfo.InvariantCulture),
+                GarageId = user.GarageId,
+                Brand = "Brand" + (carIdx + 100),
+                Model = "Model" + (carIdx + 100),
+                CarNumber = "CN" + (carIdx++ + 100),
+                UserId = user.Id,
+                Garage = user.Garage,
+                User = user
+            });
+            
+            _context.Cars.AddRange(userCars);
+        }
+
+        _context.SaveChanges();
     }
 
     private void InitUsers()
