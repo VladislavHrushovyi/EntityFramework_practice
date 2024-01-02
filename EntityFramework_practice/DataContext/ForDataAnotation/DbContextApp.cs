@@ -8,7 +8,7 @@ public class DbContextApp : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Car> Cars { get; set; }
     public DbSet<Garage> Garages { get; set; }
-    public DbContextApp(DbContextOptions options) : base(options)
+    public DbContextApp(DbContextOptions<DbContextApp> options) : base(options)
     {
     }
 }
