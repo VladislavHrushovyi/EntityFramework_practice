@@ -12,6 +12,7 @@ public static class ServiceProviderExtension
         serviceCollection.AddPropertyDataContext(config);
         serviceCollection.AddScoped<DbContextApp>();
         serviceCollection.AddScoped<SeedData>();
+        serviceCollection.AddScoped<Repositories.ForProperty.SeedData>();
         
         return serviceCollection;
     }

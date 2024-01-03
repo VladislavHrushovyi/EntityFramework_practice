@@ -18,4 +18,5 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapGroup("/DataAnnotation").DataAnnotationEndpoints().WithTags("DataAnnotationEndpoints");
+app.MapGroup("/PropertyClass").PropertyClassEndpoints().WithTags("PropertyClassEndpoints");
 app.Run();
