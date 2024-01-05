@@ -13,4 +13,9 @@ public class DbFluentApi : DbContext
     {
         
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        
+    }
 }
