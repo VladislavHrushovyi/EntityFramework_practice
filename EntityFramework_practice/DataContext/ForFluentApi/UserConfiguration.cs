@@ -8,11 +8,14 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
+        builder.ToTable(nameof(User));
+
         builder.Property(p => p.Id)
             .IsRequired()
             .HasColumnName(nameof(User.Id))
-            .HasDefaultValue(0)
-            .HasIdentityOptions(1, 1, 1, 100_000, true, 0);
+            .HasIdentityOptions(1, 1, 1, 100_000, true, 10)
+            .UseIdentityColumn()
+            .HasConversion<int>();
 
         builder.Property(p => p.Name)
             .IsRequired()
@@ -23,6 +26,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasColumnName(nameof(User.Surname))
             .HasMaxLength(50);
+
+        builder.Property(x => x.BankAccountId)
+            .IsRequired()
+            .HasConversion<int>()
+            .HasColumnName(nameof(User.BankAccountId));
 
         builder.HasOne<BankAccount>(b => b.BankAccount)
             .WithOne(x => x.User)

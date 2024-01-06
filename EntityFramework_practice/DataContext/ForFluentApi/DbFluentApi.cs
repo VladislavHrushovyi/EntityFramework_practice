@@ -16,6 +16,8 @@ public class DbFluentApi : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        
+        modelBuilder.ApplyConfiguration(new UserConfiguration());
+        modelBuilder.ApplyConfiguration(new BankAccountConfiguration());
+        modelBuilder.ApplyConfiguration(new TransactionHistoryConfiguration());
     }
 }

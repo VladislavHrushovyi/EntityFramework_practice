@@ -2,11 +2,11 @@
 
 public class TransactionHistory : BaseEntity
 {
-    public User FromUser { get; set; }
-    public string FromAccountId { get; set; }
+    public BankAccount FromAccount { get; set; }
+    public int FromAccountId { get; set; }
 
-    public User ToUser { get; set; }
-    public string ToAccountId { get; set; }
+    public BankAccount ToAccount { get; set; }
+    public int ToAccountId { get; set; }
 
     public float AmountMoney { get; set; }
     public string ActionType { get; set; }
