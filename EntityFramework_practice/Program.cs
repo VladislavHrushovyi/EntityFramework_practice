@@ -19,4 +19,5 @@ app.UseHttpsRedirection();
 
 app.MapGroup("/DataAnnotation").DataAnnotationEndpoints().WithTags("DataAnnotationEndpoints");
 app.MapGroup("/PropertyClass").PropertyClassEndpoints().WithTags("PropertyClassEndpoints");
+app.MapGroup("/FluentApi").FluentApiEndpoints().WithTags("FluentApiEndpoints");
 app.Run();

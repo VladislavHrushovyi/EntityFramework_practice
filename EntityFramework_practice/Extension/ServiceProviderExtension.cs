@@ -1,6 +1,6 @@
 ﻿using EntityFramework_practice.DataContext.ByProperty;
 using EntityFramework_practice.DataContext.ForDataAnotation;
-using EntityFramework_practice.DataContext.ForFluentApi;
+using EntityFramework_practice.DataContext.ForFluentContext;
 using EntityFramework_practice.Repositories.ForDataAnnotation;
 
 namespace EntityFramework_practice.Extension;
@@ -15,6 +15,7 @@ public static class ServiceProviderExtension
         serviceCollection.AddScoped<DbContextApp>();
         serviceCollection.AddScoped<SeedData>();
         serviceCollection.AddScoped<Repositories.ForProperty.SeedData>();
+        serviceCollection.AddScoped<Repositories.ForFluentApi.SeedData>();
         
         return serviceCollection;
     }
@@ -35,7 +36,7 @@ public static class ServiceProviderExtension
     private static IServiceCollection AddFluentDataContext(this IServiceCollection serviceCollection, IConfiguration config)
     {
         Console.WriteLine(config.GetConnectionString("FluentApi"));
-        serviceCollection.AddNpgsql<DbFluentApi>(config.GetConnectionString("FluentApi"));
+        serviceCollection.AddNpgsql<DbFluentContext>(config.GetConnectionString("FluentApi"));
         return serviceCollection;
     }
 }

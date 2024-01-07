@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace EntityFramework_practice.DataContext.ForFluentApi;
+namespace EntityFramework_practice.DataContext.ForFluentContext;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
