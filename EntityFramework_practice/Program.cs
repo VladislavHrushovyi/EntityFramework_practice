@@ -4,7 +4,10 @@ using EntityFramework_practice.Extension.Endpoints;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.CustomSchemaIds(x => x.FullName);
+});
 builder.Services.AddDataContexts(builder.Configuration);
 
 var app = builder.Build();
