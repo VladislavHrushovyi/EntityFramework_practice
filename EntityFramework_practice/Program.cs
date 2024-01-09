@@ -18,6 +18,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.InitializationDatabases();
 app.UseHttpsRedirection();
 
 app.MapGroup("/DataAnnotation").DataAnnotationEndpoints().WithTags("DataAnnotationEndpoints");
