@@ -1,4 +1,4 @@
-﻿using EntityFramework_practice.Entities.FluentApi;
+﻿using EntityFramework_practice.Entities.FluentContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace EntityFramework_practice.DataContext.ForFluentContext;

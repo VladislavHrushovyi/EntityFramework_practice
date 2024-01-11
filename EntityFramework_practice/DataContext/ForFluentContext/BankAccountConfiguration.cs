@@ -1,4 +1,4 @@
-﻿using EntityFramework_practice.Entities.FluentApi;
+﻿using EntityFramework_practice.Entities.FluentContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

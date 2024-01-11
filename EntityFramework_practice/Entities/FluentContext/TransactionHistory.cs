@@ -1,4 +1,4 @@
-﻿namespace EntityFramework_practice.Entities.FluentApi;
+﻿namespace EntityFramework_practice.Entities.FluentContext;
 
 public class TransactionHistory : BaseEntity
 {

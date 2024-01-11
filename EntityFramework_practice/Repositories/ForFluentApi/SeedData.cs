@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using EntityFramework_practice.DataContext.ForFluentContext;
-using EntityFramework_practice.Entities.FluentApi;
+using EntityFramework_practice.Entities.FluentContext;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace EntityFramework_practice.Repositories.ForFluentApi;
