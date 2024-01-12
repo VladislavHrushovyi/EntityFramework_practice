@@ -19,30 +19,39 @@ public static class MigrationProvider
     private static void InitAnnotationDb(IServiceScope scope)
     {
         using var annotationContext = scope.ServiceProvider.GetRequiredService<DbContextApp>();
+        
+        if (annotationContext.Database.EnsureCreated()) return;
+        
         var migrationNames = GetMigrationNames("\\Migration\\DataAnnotation");
         foreach (var migrationName in migrationNames)
         {
-            annotationContext.GetInfrastructure().GetService<IMigrator>()!.MigrateAsync(migrationName);
+            annotationContext.GetInfrastructure().GetService<IMigrator>()!.MigrateAsync(migrationName).GetAwaiter().GetResult();
         }
     }
 
     private static void InitPropertyDb(IServiceScope scope)
     {
         using var propertyContext = scope.ServiceProvider.GetRequiredService<DbContextProperty>();
+        
+        if (propertyContext.Database.EnsureCreated()) return;
+        
         var migrationNames = GetMigrationNames("\\Migration\\DataProperty");
         foreach (var migrationName in migrationNames)
         {
-            propertyContext.GetInfrastructure().GetService<IMigrator>()!.MigrateAsync(migrationName);
+            propertyContext.GetInfrastructure().GetService<IMigrator>()!.MigrateAsync(migrationName).GetAwaiter().GetResult();
         }
     }
 
     private static void InitFluentApiDb(IServiceScope scope)
     {
         using var fluentContext = scope.ServiceProvider.GetRequiredService<DbFluentContext>();
+
+        if (fluentContext.Database.EnsureCreated()) return;
+        
         var migrationNames = GetMigrationNames("\\Migration\\FluentApi");
         foreach (var migrationName in migrationNames)
         {
-            fluentContext.GetInfrastructure().GetService<IMigrator>()!.MigrateAsync(migrationName);
+            fluentContext.GetInfrastructure().GetService<IMigrator>()!.MigrateAsync(migrationName).GetAwaiter().GetResult();
         }
     }
 

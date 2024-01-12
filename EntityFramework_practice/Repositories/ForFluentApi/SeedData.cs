@@ -15,7 +15,7 @@ public class SeedData(DbFluentContext context)
         await RemoveDataInDb();
         await InitUsers();
         await InitTransactions();
-        return _context.Users.Include(x => x.BankAccount).ThenInclude(x => x.TransactionHistories).Select(x =>
+        return _context.Users.AsNoTracking().Include(x => x.BankAccount).ThenInclude(x => x.TransactionHistories).Select(x =>
             new User()
             {
                 Id = x.Id,
@@ -29,6 +29,7 @@ public class SeedData(DbFluentContext context)
                     UserId = x.BankAccount.UserId,
                     Balance = x.BankAccount.Balance,
                     CreatedTime = x.BankAccount.CreatedTime,
+                    Metadata = x.BankAccount.Metadata,
                     TransactionHistories = x.BankAccount.TransactionHistories.Select(tr => new TransactionHistory()
                         {
                             Id = tr.Id,
@@ -105,6 +106,17 @@ public class SeedData(DbFluentContext context)
                 CreatedTime = DateTime.Now.ToString(CultureInfo.CurrentCulture),
                 Balance = 10_000,
                 UserId = i + 1,
+                Metadata = new Metadata()
+                {
+                    CardNumber = string.Join("", Enumerable.Range(0 , 15).Select(_ => Random.Shared.Next(0,9))),
+                    CardExpireData = DateTime.Now.AddYears(Random.Shared.Next(1,5)).ToString(CultureInfo.CurrentCulture),
+                    CVV = Random.Shared.Next(100, 999).ToString(),
+                    PaySystemInfo = new PaySystemInfo()
+                    {
+                        Name = Random.Shared.Next(0,10) > 5 ? "Visa" : "MasterCard",
+                        SystemCode = Random.Shared.Next(0,10) > 5 ? "4411" : "5954",
+                    }
+                }
             },
             BankAccountId = i + 1
         });
