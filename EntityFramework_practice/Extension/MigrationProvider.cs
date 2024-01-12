@@ -1,4 +1,6 @@
-﻿using EntityFramework_practice.DataContext.ForDataAnotation;
+﻿using EntityFramework_practice.DataContext.ByProperty;
+using EntityFramework_practice.DataContext.ForDataAnotation;
+using EntityFramework_practice.DataContext.ForFluentContext;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 
@@ -16,34 +18,31 @@ public static class MigrationProvider
 
     private static void InitAnnotationDb(IServiceScope scope)
     {
-        var annotationContext = scope.ServiceProvider.GetRequiredService<DbContextApp>();
-        if (!annotationContext.Database.EnsureCreated())
+        using var annotationContext = scope.ServiceProvider.GetRequiredService<DbContextApp>();
+        var migrationNames = GetMigrationNames("\\Migration\\DataAnnotation");
+        foreach (var migrationName in migrationNames)
         {
-            var migrationNames = GetMigrationNames("\\Migration\\DataAnnotation");
-            foreach (var migrationName in migrationNames)
-            {
-                annotationContext.GetInfrastructure().GetService<IMigrator>()!.MigrateAsync(migrationName);
-            }   
+            annotationContext.GetInfrastructure().GetService<IMigrator>()!.MigrateAsync(migrationName);
         }
     }
-    
+
     private static void InitPropertyDb(IServiceScope scope)
     {
-        var annotationContext = scope.ServiceProvider.GetRequiredService<DbContextApp>();
+        using var propertyContext = scope.ServiceProvider.GetRequiredService<DbContextProperty>();
         var migrationNames = GetMigrationNames("\\Migration\\DataProperty");
         foreach (var migrationName in migrationNames)
         {
-            annotationContext.GetInfrastructure().GetService<IMigrator>()!.MigrateAsync(migrationName);
+            propertyContext.GetInfrastructure().GetService<IMigrator>()!.MigrateAsync(migrationName);
         }
     }
-    
+
     private static void InitFluentApiDb(IServiceScope scope)
     {
-        var annotationContext = scope.ServiceProvider.GetRequiredService<DbContextApp>();
+        using var fluentContext = scope.ServiceProvider.GetRequiredService<DbFluentContext>();
         var migrationNames = GetMigrationNames("\\Migration\\FluentApi");
         foreach (var migrationName in migrationNames)
         {
-            annotationContext.GetInfrastructure().GetService<IMigrator>()!.MigrateAsync(migrationName);
+            fluentContext.GetInfrastructure().GetService<IMigrator>()!.MigrateAsync(migrationName);
         }
     }
 
